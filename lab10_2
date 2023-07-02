@@ -1,0 +1,111 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Apartment  {
+protected:
+    char name[100];
+    char city[100];
+    double price;
+    double commision;
+    int br_kreveti;
+    double totalprice;
+public:
+    Apartment(char name[100],char city[100],double price, double commision,int br_kreveti){
+        strcpy(this->name,name);
+        strcpy(this->city,city);
+        this->price=price;
+        this->commision=commision;
+        this->br_kreveti=br_kreveti;
+        totalprice=0;
+    }
+    double calculateTotalPrice(){
+        totalprice= price*commision+price;
+    }
+    void displayInfo(){
+        cout<<name<<" "<<city<<" "<<br_kreveti<<" "<<totalprice<<endl;
+    }
+    
+};
+class LuxaryApartment:public Apartment{
+private:
+    bool view;
+    int people;
+    static double discount;
+public:
+    LuxaryApartment(Apartment f,bool view=false,int people=0): Apartment(f){
+        this->view=view;
+        this->people=people;
+    }
+    static void setLoyaltyDiscount (double Discount){
+        discount=Discount;
+    }
+    double calculateTotalPrice(){
+        if(people<=br_kreveti){
+            if (!view) {
+                return (price * commision + price) - (price * commision + price)*(discount / 100.0);
+            } else if (view) {
+                return (price * commision + price) - (price * commision + price)*(discount / 100.0)
+                        +(((price * commision + price) - (price * commision + price)*(discount / 100.0))*0.2);
+            }
+        }
+        else{    cout<<"Invalid Number Of People Exception"<<endl;
+        }
+    }
+    void displayInfo(){
+        totalprice=calculateTotalPrice();
+        if(view) {
+            cout <<name<< " " <<city<< " " <<br_kreveti<< " " <<"with a view "<<endl<<"Total price: $"<< totalprice << endl;
+        } else{
+            cout <<name<< " " <<city<< " " <<br_kreveti<< " " <<"without a view "<<endl<<"Total price: $"<< totalprice << endl;
+        }
+    }
+
+};
+ double LuxaryApartment::discount = 10;
+int main() {
+    int testCase;
+    cin>>testCase;
+    char name[100];
+    char city[100];
+    double price;
+    double commission;
+    int numberOfBeds;
+    int numberOfPeople;
+    bool withView;
+
+    if(testCase == 1){
+        cout << "===== Testiranje na klasite ======" << endl;
+        int n;
+        cin>>n;
+        for(int i=0; i<n;i++){
+            cin >> name >> city >> price >> commission >> numberOfBeds >> withView >>numberOfPeople;
+            Apartment f = Apartment(name, city, price, commission, numberOfBeds);
+            LuxaryApartment ec = LuxaryApartment(f, withView, numberOfPeople);
+            ec.displayInfo();
+        }
+    }
+    if(testCase == 2){
+        cout << "===== Testiranje na isklucoci ======" << endl;
+        int n;
+        cin>>n;
+        for(int i=0; i<n;i++){
+            cin >> name >> city >> price >> commission >> numberOfBeds >> withView >>numberOfPeople;
+            Apartment f = Apartment(name, city, price, commission, numberOfBeds);
+            LuxaryApartment ec = LuxaryApartment(f, withView, numberOfPeople);
+            ec.displayInfo();
+        }
+    }
+    if(testCase == 3){
+        cout << "===== Testiranje na static clenovi ======" << endl;
+        cin >> name >> city >> price >> commission >> numberOfBeds >> withView >>numberOfPeople;
+        Apartment f = Apartment(name, city, price, commission, numberOfBeds);
+        LuxaryApartment ec = LuxaryApartment(f, withView, numberOfPeople);
+        ec.displayInfo();
+        LuxaryApartment::setLoyaltyDiscount(30);
+        ec.displayInfo();
+    }
+
+    return 0;
+}
+
